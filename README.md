@@ -24,3 +24,5 @@ is not (it can't be because we're not blessing array references).
 
 It's not well-documented because it's not intended for production release,
 though there are a few nits in the code cleaned up.
+
+Corinna is still a work in progress, so we'll be updating this code later.
