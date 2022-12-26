@@ -1,9 +1,6 @@
 #!perl
 
-use lib 'toke-parser/lib';
-use v5.36.0;
-use strict;
-use warnings;
+use v5.37.8;
 use Test::More;
 
 use HTML::TokeParser::Corinna::Token;
