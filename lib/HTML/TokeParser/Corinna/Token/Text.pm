@@ -1,7 +1,9 @@
 use experimental 'class';
 
 class HTML::TokeParser::Corinna::Token::Text : isa(HTML::TokeParser::Corinna::Token) {
-    method is_text { 1 }
+    no warnings 'experimental::builtin';
+    use builtin 'true';
+    method is_text { true }
 }
 
 1;

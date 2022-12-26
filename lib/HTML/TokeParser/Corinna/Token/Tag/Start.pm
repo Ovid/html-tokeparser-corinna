@@ -1,6 +1,8 @@
 use experimental 'class';
 class HTML::TokeParser::Corinna::Token::Tag::Start :isa(HTML::TokeParser::Corinna::Token::Tag) {
     use HTML::Entities qw/encode_entities/;
+    no warnings 'experimental::builtin';
+    use builtin 'true', 'false';
 
     method set_attr ($name, $value) {
         $name = lc $name;
@@ -48,7 +50,7 @@ class HTML::TokeParser::Corinna::Token::Tag::Start :isa(HTML::TokeParser::Corinn
     method attrseq      { $self->_get_token->[3]  }
     method to_string    { $self->_get_token->[4] }
     method is_start_tag ($tag=undef) {
-        return 1 unless defined $tag;
+        return true unless defined $tag;
         return lc $tag eq lc $self->tag;
     }
 }
