@@ -39,7 +39,7 @@ class HTML::TokeParser::Corinna {
         my $token = $parser->get_tag(@args) or return;
 
         # for some reason, HTML::Parser strips the leading letter if we
-        # fetch tags directory
+        # fetch tags directly
         my $is_start = $token->[0] !~ /^\//;
         unshift @$token => $is_start ? 'S' : 'E';
         return $is_start
