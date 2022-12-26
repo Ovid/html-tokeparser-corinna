@@ -22,11 +22,7 @@ class HTML::TokeParser::Corinna {
     );
 
     field $html :param;
-    field $parser;
-
-    ADJUST {
-        $parser = HTML::TokeParser->new( \$html );
-    }
+    field $parser //= HTML::TokeParser->new( \$html );
 
     method get_token (@args) {
         my $token = $parser->get_token( @args ) or return;
