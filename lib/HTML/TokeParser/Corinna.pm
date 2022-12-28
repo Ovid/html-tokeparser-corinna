@@ -13,20 +13,20 @@ class HTML::TokeParser::Corinna {
 
     # should be class data
     my %TOKEN_CLASSES = (
-        S   => 'HTML::TokeParser::Corinna::Token::Tag::Start',
-        E   => 'HTML::TokeParser::Corinna::Token::Tag::End',
-        T   => 'HTML::TokeParser::Corinna::Token::Text',
-        C   => 'HTML::TokeParser::Corinna::Token::Comment',
-        D   => 'HTML::TokeParser::Corinna::Token::Declaration',
-        PI  => 'HTML::TokeParser::Corinna::Token::ProcessInstruction',
+        S  => 'HTML::TokeParser::Corinna::Token::Tag::Start',
+        E  => 'HTML::TokeParser::Corinna::Token::Tag::End',
+        T  => 'HTML::TokeParser::Corinna::Token::Text',
+        C  => 'HTML::TokeParser::Corinna::Token::Comment',
+        D  => 'HTML::TokeParser::Corinna::Token::Declaration',
+        PI => 'HTML::TokeParser::Corinna::Token::ProcessInstruction',
     );
 
-    field $html :param;
+    field $html : param;
     field $parser //= HTML::TokeParser->new( \$html );
 
     method get_token (@args) {
-        my $token = $parser->get_token( @args ) or return;
-        if (my $factory_class = $TOKEN_CLASSES{$token->[0]}) {
+        my $token = $parser->get_token(@args) or return;
+        if ( my $factory_class = $TOKEN_CLASSES{ $token->[0] } ) {
             return $factory_class->new( token => $token );
         }
         else {
@@ -35,7 +35,7 @@ class HTML::TokeParser::Corinna {
         }
     }
 
-    method get_tag(@args) {
+    method get_tag (@args) {
         my $token = $parser->get_tag(@args) or return;
 
         # for some reason, HTML::Parser strips the leading letter if we
@@ -47,14 +47,14 @@ class HTML::TokeParser::Corinna {
           : HTML::TokeParser::Corinna::Token::Tag::End->new( token => $token );
     }
 
-    method peek ($count = 1) {
-        unless ($count =~ /^\d+$/) {
+    method peek ( $count = 1 ) {
+        unless ( $count =~ /^\d+$/ ) {
             croak("Argument to peek() must be a positive integer, not ($count)");
         }
 
         my $items = 0;
         my @tokens;
-        while ( $items++ < $count && defined ( my $token = $self->get_token ) ) {
+        while ( $items++ < $count && defined( my $token = $self->get_token ) ) {
             push @tokens, $token;
         }
         $parser->unget_token(@tokens);

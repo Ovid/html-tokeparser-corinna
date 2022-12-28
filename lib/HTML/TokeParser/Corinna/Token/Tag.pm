@@ -3,10 +3,8 @@ class HTML::TokeParser::Corinna::Token::Tag :isa(HTML::TokeParser::Corinna::Toke
     no warnings 'experimental::builtin';
     use builtin 'true', 'false';
 
-    field $attrseq //= [];
-    field $attr    //= {};
-    method attrseq           { $attrseq }
-    method attr (@)          { $attr }
+    method attrseq           { [] }
+    method attr (@)          { {} }
     method to_string         { $self->_get_token->[2] }
     method tag               { lc $self->_get_token->[1] }
     method is_tag            {true}
