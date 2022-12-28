@@ -1,7 +1,7 @@
 use experimental 'class';
 class HTML::TokeParser::Corinna {
     use Carp 'croak';
-    use HTML::TokeParser;
+    use HTML::TokeParser 3.25;
     use HTML::TokeParser::Corinna::Token;
     use HTML::TokeParser::Corinna::Token::Tag;
     use HTML::TokeParser::Corinna::Token::Tag::Start;
@@ -21,8 +21,15 @@ class HTML::TokeParser::Corinna {
         PI => 'HTML::TokeParser::Corinna::Token::ProcessInstruction',
     );
 
-    field $html : param;
-    field $parser //= HTML::TokeParser->new( \$html );
+    field $html : param = undef;
+    field $file : param = undef;
+    ADJUST {
+        unless ( $html xor $file ) {
+            croak("You must supply 'html' or 'file' to the constructor");
+        }
+        my $target = $html ? \$html : $file;
+        $parser = HTML::TokeParser->new($target);
+    }
 
     method get_token (@args) {
         my $token = $parser->get_token(@args) or return;
