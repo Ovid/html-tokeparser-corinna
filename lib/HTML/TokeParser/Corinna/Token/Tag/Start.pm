@@ -57,3 +57,57 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
 }
 
 1;
+__END__
+
+=head1 NAME
+
+HTML::TokeParser::Corinna::Token::Tag::Start - Token.pm "start tag" class.
+
+=head1 SYNOPSIS
+
+     use HTML::TokeParser::Corinna;
+     my $p = HTML::TokeParser::Corinna->new( file => $somefile );
+    
+     while ( my $token = $p->get_token ) {
+         # This prints all text in an HTML doc (i.e., it strips the HTML)
+         next unless $token->is_text;
+         print $token->to_string;
+     }
+
+=head1 DESCRIPTION
+
+This class does most of the heavy lifting for C<HTML::TokeParser::Corinna>.  See
+the C<HTML::TokeParser::Corinna> docs for details.
+
+=head1 OVERRIDDEN METHODS
+
+=over 4
+
+=item * to_string
+
+=item * delete_attr
+
+=item * tag
+
+=item * token0
+
+=item * is_start_tag
+
+=item * is_tag
+
+=item * attr
+
+=item * attrseq
+
+=item * tag
+
+=item * text
+
+=item * rewrite_tag
+
+=item * set_attr
+
+=back
+
+=cut
+

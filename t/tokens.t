@@ -11,6 +11,7 @@ use HTML::TokeParser::Corinna::Token::ProcessInstruction;
 use HTML::TokeParser::Corinna::Token::Tag;
 use HTML::TokeParser::Corinna::Token::Tag::End;
 use HTML::TokeParser::Corinna::Token::Tag::Start;
+use Test2::Plugin::BailOnFail;
 
 subtest 'token abstract class' => sub {
 
@@ -20,12 +21,13 @@ subtest 'token abstract class' => sub {
       'We should be able to create a token object';
     is $token->to_string, '<p>',
       '... and we should be able to get the string representation of the token';
+    is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
+    is_deeply $token->attr, {}, '... and the attributes as a hashref';
 
     foreach my $method (
         qw/
         is_tag is_start_tag is_end_tag is_text is_comment is_declaration is_pi
-        is_process_instruction delete_attr set_attr tag attr attrseq
-        token0
+        is_process_instruction delete_attr set_attr tag token0
         /
       )
     {
@@ -41,12 +43,13 @@ subtest 'text tokens' => sub {
     is $token->to_string, 'This is my text',
       '... and we should be able to get the string representation of the token';
     ok $token->is_text, '... and it should declare itself a text token';
+    is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
+    is_deeply $token->attr, {}, '... and the attributes as a hashref';
 
     foreach my $method (
         qw/
         is_tag is_start_tag is_end_tag is_comment is_declaration is_pi
-        is_process_instruction delete_attr set_attr tag attr attrseq
-        token0
+        is_process_instruction delete_attr set_attr tag token0
         /
       )
     {
@@ -62,12 +65,13 @@ subtest 'comment tokens' => sub {
     is $token->to_string, '<!-- this is a comment -->',
 '... and we should be able to get the string representation of the comment';
     ok $token->is_comment, '... and it should declare itself a comment token';
+    is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
+    is_deeply $token->attr, {}, '... and the attributes as a hashref';
 
     foreach my $method (
         qw/
         is_tag is_start_tag is_end_tag is_text is_declaration is_pi
-        is_process_instruction delete_attr set_attr tag attr attrseq
-        token0
+        is_process_instruction delete_attr set_attr tag token0
         /
       )
     {
@@ -88,12 +92,13 @@ subtest 'declaration tokens' => sub {
     is $token->to_string, $declaration,
 '... and we should be able to get the string representation of the declaration';
     ok $token->is_declaration, '... and it should declare itself a declaration token';
+    is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
+    is_deeply $token->attr, {}, '... and the attributes as a hashref';
 
     foreach my $method (
         qw/
         is_tag is_start_tag is_end_tag is_text is_comment is_pi
-        is_process_instruction delete_attr set_attr tag attr attrseq
-        token0
+        is_process_instruction delete_attr set_attr tag token0
         /
       )
     {
@@ -113,11 +118,13 @@ subtest 'process instruction tokens' => sub {
     ok $token->is_process_instruction, '... and it should declare itself a process instruction token';
     ok $token->is_pi, '... and it should declare itself a process instruction token';
     is $token->token0, $token0, '... and the token should also be returned';
+    is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
+    is_deeply $token->attr, {}, '... and the attributes as a hashref';
 
     foreach my $method (
         qw/
         is_tag is_start_tag is_end_tag is_text is_comment is_declaration
-        delete_attr set_attr tag attr attrseq
+        delete_attr set_attr tag 
         /
       )
     {
