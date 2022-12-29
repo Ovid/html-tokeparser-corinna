@@ -1,4 +1,4 @@
-use v5.27.8;
+use v5.37.8;
 use experimental 'class';
 class HTML::TokeParser::Corinna {
     use Carp 'croak';
