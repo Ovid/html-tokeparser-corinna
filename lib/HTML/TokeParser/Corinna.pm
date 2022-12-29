@@ -35,14 +35,10 @@ class HTML::TokeParser::Corinna {
     }
 
     method get_token (@args) {
-        my $token = $parser->get_token(@args) or return;
-        if ( my $factory_class = $TOKEN_CLASSES{ $token->[0] } ) {
-            return $factory_class->new( token => $token );
-        }
-        else {
-            # this should never happen
-            croak("Cannot determine token class for token (@$token)");
-        }
+        my $token         = $parser->get_token(@args) or return;
+        my $factory_class = $TOKEN_CLASSES{ $token->[0] }
+          or croak("PANICE: Cannot determine token class for token (@$token)");
+        return $factory_class->new( token => $token );
     }
 
     method get_tag (@args) {
@@ -58,7 +54,7 @@ class HTML::TokeParser::Corinna {
     }
 
     method peek ( $count = 1 ) {
-        unless ( $count =~ /^\d+$/ ) {
+        unless ( $count =~ /^\d+$/a && $count > 0 ) {
             croak("Argument to peek() must be a positive integer, not ($count)");
         }
 
