@@ -1,3 +1,4 @@
+use v5.27.8;
 use experimental 'class';
 class HTML::TokeParser::Corinna {
     use Carp 'croak';
@@ -24,6 +25,7 @@ class HTML::TokeParser::Corinna {
 
     field $html : param = undef;
     field $file : param = undef;
+    field $parser;
     ADJUST {
         unless ( $html xor $file ) {
             croak("You must supply 'html' or 'file' to the constructor");
