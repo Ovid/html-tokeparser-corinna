@@ -3,10 +3,7 @@ use experimental 'class';
 class HTML::TokeParser::Corinna::Token {
     no warnings 'experimental::builtin';
     use builtin 'false';
-    field $token : param;
 
-    method to_string              { $token->[1] }
-    method _get_token             {$token}
     method is_tag                 {false}
     method is_start_tag           {false}
     method is_end_tag             {false}

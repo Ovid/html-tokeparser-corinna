@@ -4,14 +4,21 @@ class HTML::TokeParser::Corinna::Token::Tag::End : isa(HTML::TokeParser::Corinna
     no warnings 'experimental::builtin';
     use builtin 'true', 'false';
 
-    method is_end_tag ( $tag = undef ) {
-        return true unless defined $tag;
-        return lc $tag eq lc $self->tag;
+    # ["E",  $tag, $text]
+    field $token : param;
+    field $tag       = $token->[1];
+    field $to_string = $token->[2];
+
+    method tag       {$tag}
+    method to_string {$to_string}
+
+    method is_end_tag ( $maybe_tag = undef ) {
+        return true unless defined $maybe_tag;
+        return lc $maybe_tag eq lc $tag;
     }
 
     method rewrite_tag {
-        my $tag = $self->tag;
-        $self->_get_token->[2] = sprintf "</%s>" => $tag;
+        $to_string = sprintf "</%s>" => $tag;
     }
 }
 

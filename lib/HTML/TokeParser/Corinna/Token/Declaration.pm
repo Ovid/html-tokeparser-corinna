@@ -1,8 +1,13 @@
 use experimental 'class';
-class  HTML::TokeParser::Corinna::Token::Declaration :isa(HTML::TokeParser::Corinna::Token) {
+class HTML::TokeParser::Corinna::Token::Declaration : isa(HTML::TokeParser::Corinna::Token) {
     no warnings 'experimental::builtin';
     use builtin 'true';
-    method is_declaration { true }
+
+    # ["D",  $text]
+    field $token : param;
+    field $to_string = $token->[1];
+    method is_declaration {true}
+    method to_string      {$to_string}
 }
 
 1;

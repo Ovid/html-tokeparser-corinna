@@ -3,7 +3,15 @@ use experimental 'class';
 class HTML::TokeParser::Corinna::Token::Text : isa(HTML::TokeParser::Corinna::Token) {
     no warnings 'experimental::builtin';
     use builtin 'true';
-    method is_text { true }
+
+    # ["T",  $text, $is_data]
+    field $token : param;
+    field $to_string = $token->[1];
+    field $is_data   = $token->[2];
+
+    method is_text   {true}
+    method to_string {$to_string}
+    method is_data   {$is_data}
 }
 
 1;

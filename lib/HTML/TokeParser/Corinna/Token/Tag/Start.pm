@@ -4,10 +4,24 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
     no warnings 'experimental::builtin';
     use builtin 'true', 'false';
 
+    # ["S",  $tag, $attr, $attrseq, $text]
+    field $token : param;
+    field $tag       = $token->[1];
+    field $attr      = $token->[2];
+    field $attrseq   = $token->[3];
+    field $to_string = $token->[4];
+
+    method tag {$tag}
+
+    method attr ( $name = undef ) {
+        return $name ? $attr->{ lc $name } : $attr;
+    }
+
+    method attrseq   {$attrseq}
+    method to_string {$to_string}
+
     method set_attr ( $name, $value ) {
         $name = lc $name;
-        my $attr    = $self->attr;
-        my $attrseq = $self->attrseq;
         unless ( exists $attr->{$name} ) {
             push @$attrseq => $name;
         }
@@ -16,8 +30,6 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
     }
 
     method rewrite_tag {
-        my $attr    = $self->attr;
-        my $attrseq = $self->attrseq;
 
         # capture the final slash if the tag is self-closing
         my ($self_closing) = $self->to_string =~ m{(\s?/)>$};
@@ -29,26 +41,17 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
             $tag .= sprintf qq{ %s="%s"} => $_, encode_entities( $attr->{$_} );
         }
         $tag = sprintf '<%s%s%s>', $self->tag, $tag, $self_closing;
-        $self->_get_token->[4] = $tag;
+        $to_string = $tag;
     }
 
     method delete_attr ($name) {
         $name = lc $name;
-        my $attr = $self->attr;
         return unless exists $attr->{$name};
         delete $attr->{$name};
         my $attrseq = $self->attrseq;
         @$attrseq = grep { $_ ne $name } @$attrseq;
         $self->rewrite_tag;
     }
-
-    method attr ( $name = undef ) {
-        my $attributes = $self->_get_token->[2];
-        return $name ? $attributes->{ lc $name } : $attributes;
-    }
-
-    method attrseq   { $self->_get_token->[3] }
-    method to_string { $self->_get_token->[4] }
 
     method is_start_tag ( $tag = undef ) {
         return true unless defined $tag;

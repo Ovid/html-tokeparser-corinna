@@ -1,40 +1,10 @@
-#!perl
+#!/usr/bin/env perl
 
 use v5.37.8;
-use Test::More;
+use lib 'lib';
+use Test::Most;
 
-use HTML::TokeParser::Corinna::Token;
-use HTML::TokeParser::Corinna::Token::Text;
-use HTML::TokeParser::Corinna::Token::Comment;
-use HTML::TokeParser::Corinna::Token::Declaration;
-use HTML::TokeParser::Corinna::Token::ProcessInstruction;
-use HTML::TokeParser::Corinna::Token::Tag;
-use HTML::TokeParser::Corinna::Token::Tag::End;
-use HTML::TokeParser::Corinna::Token::Tag::Start;
-use Test2::Plugin::BailOnFail;
-
-subtest 'token abstract class' => sub {
-
-    # this is an abstract base class that should not be instantiated,
-    # but we don't yet have support for abstract base classes
-    ok my $token = HTML::TokeParser::Corinna::Token->new( token => [ 'S', '<p>' ] ),
-      'We should be able to create a token object';
-    is $token->to_string, '<p>',
-      '... and we should be able to get the string representation of the token';
-    is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
-    is_deeply $token->attr, {}, '... and the attributes as a hashref';
-
-    foreach my $method (
-        qw/
-        is_tag is_start_tag is_end_tag is_text is_comment is_declaration is_pi
-        is_process_instruction delete_attr set_attr tag token0
-        /
-      )
-    {
-        ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
-    }
-};
+use HTML::TokeParser::Corinna;
 
 subtest 'text tokens' => sub {
     ok my $token = HTML::TokeParser::Corinna::Token::Text->new(
@@ -125,32 +95,6 @@ subtest 'process instruction tokens' => sub {
         qw/
         is_tag is_start_tag is_end_tag is_text is_comment is_declaration
         delete_attr set_attr tag 
-        /
-      )
-    {
-        ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
-    }
-};
-
-subtest 'tag tokens' => sub {
-
-    # abstract class
-    ok my $token =
-      HTML::TokeParser::Corinna::Token::Tag->new( token => [ 'E', 'p', '</p>'] ),
-      'We should be able to create a tag object';
-    is $token->to_string, '</p>',
-      '... and we should be able to get the string representation of the tag';
-    is $token->tag, 'p', '... and we should be able to fetch the tag';
-    ok $token->is_tag, '... and it should identify itself as a tag';
-    is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
-    is_deeply $token->attr, {}, '... and the attributes as a hashref';
-
-    foreach my $method (
-        qw/
-        is_start_tag is_end_tag is_text is_comment is_declaration
-        delete_attr set_attr  is_pi is_process_instruction
-        token0
         /
       )
     {

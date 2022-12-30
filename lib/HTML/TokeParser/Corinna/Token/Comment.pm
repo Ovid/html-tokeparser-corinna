@@ -3,7 +3,12 @@ use experimental 'class';
 class HTML::TokeParser::Corinna::Token::Comment : isa(HTML::TokeParser::Corinna::Token) {
     no warnings 'experimental::builtin';
     use builtin 'true';
+
+    # ["C",  $text]
+    field $token : param;
+    field $to_string = $token->[1];
     method is_comment {true}
+    method to_string  {$to_string}
 }
 
 1;

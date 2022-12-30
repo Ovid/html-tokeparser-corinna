@@ -1,12 +1,19 @@
 use experimental 'class';
 
-class HTML::TokeParser::Corinna::Token::ProcessInstruction :isa(HTML::TokeParser::Corinna::Token) {
+class HTML::TokeParser::Corinna::Token::ProcessInstruction : isa(HTML::TokeParser::Corinna::Token) {
     no warnings 'experimental::builtin';
     use builtin 'true';
-    method token0                 { $self->_get_token->[1] }
-    method to_string              { $self->_get_token->[2] }
-    method is_pi                  { true }
-    method is_process_instruction { true }
+    # ["PI", $token0, $text]
+    field $token : param;
+    field $token0;
+    field $to_string;
+    ADJUST { (undef, $token0, $to_string ) = $token->@*; }
+
+    method tag                    { }
+    method token0                 {$token0}
+    method to_string              {$to_string}
+    method is_pi                  {true}
+    method is_process_instruction {true}
 }
 
 1;
