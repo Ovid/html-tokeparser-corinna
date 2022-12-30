@@ -1,8 +1,10 @@
 use experimental 'class';
+use HTML::TokeParser::Corinna;
 class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corinna::Token::Tag) {
     use HTML::Entities qw/encode_entities/;
     no warnings 'experimental::builtin';
     use builtin 'true', 'false';
+    use HTML::TokeParser::Corinna::Utils 'throw';
 
     # ["S",  $tag, $attr, $attrseq, $text]
     field $token : param;
@@ -21,41 +23,59 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
     method to_string {$to_string}
 
     method set_attr ( $name, $value ) {
+        if ( !defined wantarray ) {
+            throw( VoidContext => method => 'set_attr' );
+        }
         $name = lc $name;
-        unless ( exists $attr->{$name} ) {
-            push @$attrseq => $name;
+        my $sequence   = [ $attrseq->@* ];
+        my $attributes = { $attr->%* };
+        unless ( exists $attributes->{$name} ) {
+            push @$sequence => $name;
         }
-        $attr->{$name} = $value;
-        $self->rewrite_tag;
-    }
-
-    method rewrite_tag {
-
-        # capture the final slash if the tag is self-closing
-        my ($self_closing) = $self->to_string =~ m{(\s?/)>$};
-        $self_closing ||= '';
-
-        my $tag = '';
-        foreach (@$attrseq) {
-            next if $_ eq '/';    # is this a bug in HTML::TokeParser?
-            $tag .= sprintf qq{ %s="%s"} => $_, encode_entities( $attr->{$_} );
-        }
-        $tag = sprintf '<%s%s%s>', $self->tag, $tag, $self_closing;
-        $to_string = $tag;
+        $attributes->{$name} = $value;
+        return $self->_rewrite_tag( $sequence, $attributes );
     }
 
     method delete_attr ($name) {
+        if ( !defined wantarray ) {
+            throw( VoidContext => method => 'delete_attr' );
+        }
         $name = lc $name;
-        return unless exists $attr->{$name};
-        delete $attr->{$name};
-        my $attrseq = $self->attrseq;
-        @$attrseq = grep { $_ ne $name } @$attrseq;
-        $self->rewrite_tag;
+        my $sequence   = [ $attrseq->@* ];
+        my $attributes = { $attr->%* };
+        if ( exists $attributes->{$name} ) {
+            delete $attributes->{$name};
+            $sequence->@* = grep { $_ ne $name } $sequence->@*;
+        }
+        return $self->_rewrite_tag( $sequence, $attributes );
     }
 
     method is_start_tag ( $tag = undef ) {
         return true unless defined $tag;
         return lc $tag eq lc $self->tag;
+    }
+
+    method normalize_tag () {
+        if ( !defined wantarray ) {
+            throw( VoidContext => method => 'normalize_tag' );
+        }
+        return $self->_rewrite_tag( $attrseq, $attr );
+    }
+
+    method _rewrite_tag ( $sequence, $attributes ) {
+
+        # capture the final slash if the tag is self-closing
+        my ($self_closing) = $to_string =~ m{(\s?/)>$};
+        $self_closing ||= '';
+
+        my $new_tag = '';
+        foreach (@$sequence) {
+            next if $_ eq '/';    # is this a bug in HTML::TokeParser?
+            $new_tag .= sprintf qq{ %s="%s"} => lc, encode_entities( $attributes->{$_} );
+        }
+        $new_tag = sprintf '<%s%s%s>', $tag, $new_tag, $self_closing;
+
+        return (ref $self)->new( token => [ 'S', $tag, $attributes, $sequence, $new_tag ] );
     }
 }
 
@@ -105,8 +125,6 @@ the C<HTML::TokeParser::Corinna> docs for details.
 =item * tag
 
 =item * text
-
-=item * rewrite_tag
 
 =item * set_attr
 

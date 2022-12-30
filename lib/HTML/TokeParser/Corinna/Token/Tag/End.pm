@@ -3,6 +3,7 @@ use experimental 'class';
 class HTML::TokeParser::Corinna::Token::Tag::End : isa(HTML::TokeParser::Corinna::Token::Tag) {
     no warnings 'experimental::builtin';
     use builtin 'true', 'false';
+    use HTML::TokeParser::Corinna::Utils 'throw';
 
     # ["E",  $tag, $text]
     field $token : param;
@@ -17,8 +18,12 @@ class HTML::TokeParser::Corinna::Token::Tag::End : isa(HTML::TokeParser::Corinna
         return lc $maybe_tag eq lc $tag;
     }
 
-    method rewrite_tag {
-        $to_string = sprintf "</%s>" => $tag;
+    method normalize_tag {
+        if ( !defined wantarray ) {
+            throw( VoidContext => method => 'normalize_tag' );
+        }
+        my $new_tag = lc $tag;
+        return ( ref $self )->new( token => [ 'E', $new_tag, sprintf "</%s>" => $new_tag ] );
     }
 }
 

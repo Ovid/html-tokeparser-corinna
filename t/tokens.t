@@ -7,8 +7,7 @@ use Test::Most;
 use HTML::TokeParser::Corinna;
 
 subtest 'text tokens' => sub {
-    ok my $token = HTML::TokeParser::Corinna::Token::Text->new(
-        token => [ 'T', 'This is my text' ] ),
+    ok my $token = HTML::TokeParser::Corinna::Token::Text->new( token => [ 'T', 'This is my text' ] ),
       'We should be able to create a text object';
     is $token->to_string, 'This is my text',
       '... and we should be able to get the string representation of the token';
@@ -24,16 +23,15 @@ subtest 'text tokens' => sub {
       )
     {
         ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
+          "We should be able to call \$object->$method and have it return false";
     }
 };
 
 subtest 'comment tokens' => sub {
-    ok my $token = HTML::TokeParser::Corinna::Token::Comment->new(
-        token => [ 'C', '<!-- this is a comment -->' ] ),
+    ok my $token = HTML::TokeParser::Corinna::Token::Comment->new( token => [ 'C', '<!-- this is a comment -->' ] ),
       'We should be able to create a comment object';
     is $token->to_string, '<!-- this is a comment -->',
-'... and we should be able to get the string representation of the comment';
+      '... and we should be able to get the string representation of the comment';
     ok $token->is_comment, '... and it should declare itself a comment token';
     is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
     is_deeply $token->attr, {}, '... and the attributes as a hashref';
@@ -46,7 +44,7 @@ subtest 'comment tokens' => sub {
       )
     {
         ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
+          "We should be able to call \$object->$method and have it return false";
     }
 };
 
@@ -56,11 +54,10 @@ subtest 'declaration tokens' => sub {
       "-//W3C//DTD XHTML 1.0 Transitional//EN"
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     END
-    ok my $token = HTML::TokeParser::Corinna::Token::Declaration->new(
-        token => [ 'D', $declaration ] ),
+    ok my $token = HTML::TokeParser::Corinna::Token::Declaration->new( token => [ 'D', $declaration ] ),
       'We should be able to create a declaration object';
     is $token->to_string, $declaration,
-'... and we should be able to get the string representation of the declaration';
+      '... and we should be able to get the string representation of the declaration';
     ok $token->is_declaration, '... and it should declare itself a declaration token';
     is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
     is_deeply $token->attr, {}, '... and the attributes as a hashref';
@@ -73,20 +70,19 @@ subtest 'declaration tokens' => sub {
       )
     {
         ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
+          "We should be able to call \$object->$method and have it return false";
     }
 };
 
 subtest 'process instruction tokens' => sub {
     my $token0 = 'xml-stylesheet type="text/xsl" href="style.xsl"';
-    my $pi = "<?$token0?>";
-    ok my $token = HTML::TokeParser::Corinna::Token::ProcessInstruction->new(
-        token => [ 'PR', $token0, $pi ] ),
+    my $pi     = "<?$token0?>";
+    ok my $token = HTML::TokeParser::Corinna::Token::ProcessInstruction->new( token => [ 'PR', $token0, $pi ] ),
       'We should be able to create a process instruction object';
     is $token->to_string, $pi,
-'... and we should be able to get the string representation of the process instruction';
+      '... and we should be able to get the string representation of the process instruction';
     ok $token->is_process_instruction, '... and it should declare itself a process instruction token';
-    ok $token->is_pi, '... and it should declare itself a process instruction token';
+    ok $token->is_pi,                  '... and it should declare itself a process instruction token';
     is $token->token0, $token0, '... and the token should also be returned';
     is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
     is_deeply $token->attr, {}, '... and the attributes as a hashref';
@@ -94,24 +90,24 @@ subtest 'process instruction tokens' => sub {
     foreach my $method (
         qw/
         is_tag is_start_tag is_end_tag is_text is_comment is_declaration
-        delete_attr set_attr tag 
+        delete_attr set_attr tag
         /
       )
     {
         ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
+          "We should be able to call \$object->$method and have it return false";
     }
 };
 
 subtest 'end tag tokens' => sub {
 
-    ok my $token =
-      HTML::TokeParser::Corinna::Token::Tag::End->new( token => [ 'E', 'p', '</p>'] ),
+    ok my $token
+      = HTML::TokeParser::Corinna::Token::Tag::End->new( token => [ 'E', 'p', '</p>' ] ),
       'We should be able to create a tag object';
     is $token->to_string, '</p>',
       '... and we should be able to get the string representation of the tag';
     is $token->tag, 'p', '... and we should be able to fetch the tag';
-    ok $token->is_tag, '... and it should identify itself as a tag';
+    ok $token->is_tag,     '... and it should identify itself as a tag';
     ok $token->is_end_tag, '... and even as an end tag';
     is_deeply $token->attrseq, [], 'We should be able to get the attribute sequence';
     is_deeply $token->attr, {}, '... and the attributes as a hashref';
@@ -125,7 +121,7 @@ subtest 'end tag tokens' => sub {
       )
     {
         ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
+          "We should be able to call \$object->$method and have it return false";
     }
 };
 
@@ -140,16 +136,16 @@ subtest 'start tag tokens' => sub {
     };
 
     # abstract class
-    ok my $token =
-      HTML::TokeParser::Corinna::Token::Tag::Start->new( token => [ 'S', $tag, $attr, $attrseq, $full_tag ] ),
+    ok my $token
+      = HTML::TokeParser::Corinna::Token::Tag::Start->new( token => [ 'S', $tag, $attr, $attrseq, $full_tag ] ),
       'We should be able to create a tag object';
     is $token->to_string, $full_tag,
       '... and we should be able to get the string representation of the tag';
     is $token->tag, $tag, '... and we should be able to fetch the tag';
-    ok $token->is_tag, '... and it should identify itself as a tag';
+    ok $token->is_tag,       '... and it should identify itself as a tag';
     ok $token->is_start_tag, '... and even as an end tag';
     is_deeply $token->attrseq, $attrseq, 'We should be able to get the attribute sequence';
-    is_deeply $token->attr, $attr, '... and the attributes as a hashref';
+    is_deeply $token->attr,    $attr,    '... and the attributes as a hashref';
 
     foreach my $method (
         qw/
@@ -159,12 +155,14 @@ subtest 'start tag tokens' => sub {
       )
     {
         ok !$token->$method,
-"We should be able to call \$object->$method and have it return false";
+          "We should be able to call \$object->$method and have it return false";
     }
-
-    ok $token->set_attr( id => 'bicycles' ), 'We should be able to set attributes';
-    is $token->to_string, '<article id="bicycles" data-columns="3">', '... an the to_string representation should be correct';
-    ok $token->set_attr( foo => 'bar' ), 'We should be able to add attributes';
-    is $token->to_string, '<article id="bicycles" data-columns="3" foo="bar">', '... an the to_string representation should be correct';
+    throws_ok { $token->set_attr( foo => 'bar' ) } 'HTML::TokeParser::Corinna::Exception::VoidContext', 'We cannot call setters in void context';
+    throws_ok { $token->normalize_tag } 'HTML::TokeParser::Corinna::Exception::VoidContext', 'We cannot call normalize_tag in void context';
+    ok my $new_token = $token->set_attr( id => 'bicycles' ), 'We should be able to set attributes';
+    is $token->to_string,     '<article id="electric-cars" data-columns="3">', '... and the token is unchanged';
+    is $new_token->to_string, '<article id="bicycles" data-columns="3">',      '... but we get a new token with the new data';
+    ok $new_token = $new_token->set_attr( foo => 'bar' ), 'We should be able to add attributes';
+    is $new_token->to_string, '<article id="bicycles" data-columns="3" foo="bar">', '... and again get a new token with the new attributes';
 };
 done_testing;
