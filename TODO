@@ -1,0 +1,2 @@
+- Add string overloading when overload works for Corinna
+- Add :reader and :writer attributes when they're available
