@@ -12,13 +12,6 @@ class HTML::TokeParser::Corinna::Token {
     method is_declaration         {false}
     method is_pi                  {false}
     method is_process_instruction {false}
-    method rewrite_tag            { }
-    method delete_attr            { }
-    method set_attr               { }
-    method tag                    { }
-    method attr (@)               { {} }
-    method attrseq                { [] }
-    method token0                 { }
 }
 
 1;

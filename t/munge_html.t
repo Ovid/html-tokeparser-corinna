@@ -27,7 +27,6 @@ my $p = HTML::TokeParser::Corinna->new( html => $test_html );
 
 my $token;
 do { $token = $p->get_token } until $token->is_end_tag('head');
-can_ok( $token, 'set_attr' );
 
 do { $token = $p->get_token } until $token->is_start_tag('body');
 can_ok( $token, 'set_attr' );
