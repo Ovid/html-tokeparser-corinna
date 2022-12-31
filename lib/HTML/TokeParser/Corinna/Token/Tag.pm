@@ -4,7 +4,7 @@ class HTML::TokeParser::Corinna::Token::Tag : isa(HTML::TokeParser::Corinna::Tok
     use builtin 'true', 'false';
 
     method is_tag {true}
-    method tag                    { }
+    method tag    { }
 }
 
 1;
