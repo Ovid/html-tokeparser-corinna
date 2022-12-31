@@ -13,12 +13,12 @@ class HTML::TokeParser::Corinna::Exception {
     method stack_trace () {$stack_trace}
 
     method to_string () {
-        my $erorr = $self->error;
+        my $error = $self->error;
         if ( my $message = $self->message ) {
             $error .= "\n$message";
         }
         my $stack_trace = $self->stack_trace;
-        return "Error: $message\n\nStack Trace:\n$stack_trace";
+        return "Error: $error\n\nStack Trace:\n$stack_trace";
     }
 }
 

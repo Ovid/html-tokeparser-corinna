@@ -1,6 +1,7 @@
 use v5.37.8;
 use experimental 'class';
-class HTML::TokeParser::Corinna {
+use HTML::TokeParser::Corinna::Base;
+class HTML::TokeParser::Corinna :isa(HTML::TokeParser::Corinna::Base) {
     use HTML::TokeParser::Corinna::Policy;
 
     use HTML::TokeParser 3.25;
@@ -13,6 +14,7 @@ class HTML::TokeParser::Corinna {
     use HTML::TokeParser::Corinna::Token::Comment;
     use HTML::TokeParser::Corinna::Token::Declaration;
     use HTML::TokeParser::Corinna::Token::ProcessInstruction;
+    use HTML::TokeParser::Corinna::Exception;
 
     # should be class data
     my %TOKEN_CLASSES = (
@@ -29,7 +31,11 @@ class HTML::TokeParser::Corinna {
     field $parser;
     ADJUST {
         unless ( $html xor $file ) {
-            croak("You must supply 'html' or 'file' to the constructor");
+            throw(
+                'InvalidArguemnt',
+                message => "You must supply 'html' for 'file; to the constructor",
+                method  => 'new',
+            );
         }
         my $target = $html ? \$html : $file;
         $parser = HTML::TokeParser->new($target);    # composition over inheritance
@@ -38,7 +44,7 @@ class HTML::TokeParser::Corinna {
     method get_token (@args) {
         my $token         = $parser->get_token(@args) or return;
         my $factory_class = $TOKEN_CLASSES{ $token->[0] }
-          or croak("PANICE: Cannot determine token class for token (@$token)");
+          or throw( PANIC => message => "Cannot determine token class for token (@$token)" );
         return $factory_class->new( token => $token );
     }
 
@@ -56,7 +62,11 @@ class HTML::TokeParser::Corinna {
 
     method peek ( $count = 1 ) {
         unless ( $count =~ /^\d+$/a && $count > 0 ) {
-            croak("Argument to peek() must be a positive integer, not ($count)");
+            throw(
+                'InvalidArguemnt',
+                message => "Argument to peek() must be a positive integer, not ($count)",
+                method  => 'peek',
+            );
         }
 
         my $items = 0;

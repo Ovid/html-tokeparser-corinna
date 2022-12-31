@@ -1,6 +1,6 @@
 use experimental 'class';
 
-class HTML::TokeParser::Corinna::Token {
+class HTML::TokeParser::Corinna::Token :isa(HTML::TokeParser::Corinna::Base) {
     use HTML::TokeParser::Corinna::Policy;
 
     method is_tag                 {false}
