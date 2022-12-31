@@ -23,6 +23,10 @@ subtest 'text tokens' => sub {
         ok !$token->$method,
           "We should be able to call \$object->$method and have it return false";
     }
+    throws_ok { $token->no_such_method }
+        'HTML::TokeParser::Corinna::Exception::MethodNotFound',
+        'Callling non-existent methods should throw an exception';
+    explain $@->error;
 };
 
 subtest 'comment tokens' => sub {
