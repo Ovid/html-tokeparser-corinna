@@ -1,7 +1,8 @@
 use v5.37.8;
 use experimental 'class';
 class HTML::TokeParser::Corinna {
-    use Carp 'croak';
+    use HTML::TokeParser::Corinna::Policy;
+
     use HTML::TokeParser 3.25;
 
     use HTML::TokeParser::Corinna::Token;
@@ -31,7 +32,7 @@ class HTML::TokeParser::Corinna {
             croak("You must supply 'html' or 'file' to the constructor");
         }
         my $target = $html ? \$html : $file;
-        $parser = HTML::TokeParser->new($target);
+        $parser = HTML::TokeParser->new($target);    # composition over inheritance
     }
 
     method get_token (@args) {
