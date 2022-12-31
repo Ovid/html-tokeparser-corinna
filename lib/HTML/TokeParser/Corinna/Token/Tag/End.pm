@@ -1,9 +1,7 @@
 use experimental 'class';
 
 class HTML::TokeParser::Corinna::Token::Tag::End : isa(HTML::TokeParser::Corinna::Token::Tag) {
-    no warnings 'experimental::builtin';
-    use builtin 'true', 'false';
-    use HTML::TokeParser::Corinna::Utils 'throw';
+    use HTML::TokeParser::Corinna::Policy;
 
     # ["E",  $tag, $text]
     field $token : param;

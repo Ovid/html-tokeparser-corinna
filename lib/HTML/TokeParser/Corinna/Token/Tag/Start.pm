@@ -1,10 +1,7 @@
 use experimental 'class';
-use HTML::TokeParser::Corinna;
 class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corinna::Token::Tag) {
+    use HTML::TokeParser::Corinna::Policy;
     use HTML::Entities qw/encode_entities/;
-    no warnings 'experimental::builtin';
-    use builtin 'true', 'false';
-    use HTML::TokeParser::Corinna::Utils 'throw';
 
     # ["S",  $tag, $attr, $attrseq, $text]
     field $token : param;

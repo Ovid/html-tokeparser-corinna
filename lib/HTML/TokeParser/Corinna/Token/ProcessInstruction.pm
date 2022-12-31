@@ -1,8 +1,8 @@
 use experimental 'class';
 
 class HTML::TokeParser::Corinna::Token::ProcessInstruction : isa(HTML::TokeParser::Corinna::Token) {
-    no warnings 'experimental::builtin';
-    use builtin 'true';
+    use HTML::TokeParser::Corinna::Policy;
+
     # ["PI", $token0, $text]
     field $token : param;
     field $token0;

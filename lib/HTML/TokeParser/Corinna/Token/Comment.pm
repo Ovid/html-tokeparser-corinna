@@ -1,8 +1,7 @@
 use experimental 'class';
 
 class HTML::TokeParser::Corinna::Token::Comment : isa(HTML::TokeParser::Corinna::Token) {
-    no warnings 'experimental::builtin';
-    use builtin 'true';
+    use HTML::TokeParser::Corinna::Policy;
 
     # ["C",  $text]
     field $token : param;

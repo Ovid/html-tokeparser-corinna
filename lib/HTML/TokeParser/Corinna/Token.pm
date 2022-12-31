@@ -1,8 +1,7 @@
 use experimental 'class';
 
 class HTML::TokeParser::Corinna::Token {
-    no warnings 'experimental::builtin';
-    use builtin 'false';
+    use HTML::TokeParser::Corinna::Policy;
 
     method is_tag                 {false}
     method is_start_tag           {false}

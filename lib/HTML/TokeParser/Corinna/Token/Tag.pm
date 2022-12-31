@@ -1,7 +1,6 @@
 use experimental 'class';
 class HTML::TokeParser::Corinna::Token::Tag : isa(HTML::TokeParser::Corinna::Token) {
-    no warnings 'experimental::builtin';
-    use builtin 'true', 'false';
+    use HTML::TokeParser::Corinna::Policy;
 
     method is_tag {true}
     method tag    { }
