@@ -3,6 +3,7 @@
 use lib 'lib';
 use Test::Most;
 use HTML::TokeParser::Corinna::Utils 'throw';
+plan skip_all => 'overload does not yet work for Corinna';
 
 throws_ok { throw( VoidContext => method => 'some_method' ) }
 'HTML::TokeParser::Corinna::Exception::VoidContext',

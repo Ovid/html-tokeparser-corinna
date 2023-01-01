@@ -7,7 +7,9 @@ package HTML::TokeParser::Corinna::Utils {
 
     sub throw ( $name, %args ) {
         my $class = "HTML::TokeParser::Corinna::Exception::$name";
-        die use_module($class)->new(%args);
+
+		# XXX Unfortunately, overload doesn't yet work with Corinna
+        die use_module($class)->new(%args)->to_string;
     }
 }
 

@@ -1,2 +1,7 @@
 - Add string overloading when overload works for Corinna
 - Add :reader and :writer attributes when they're available
+- Mark ::Token and ::Tag classes as abstract
+- Move MethodNotFound handling into a role
+- Can we move `field $token :param` into role>
+- Mark private methods as :private
+- Can we make attribute methods privates?
