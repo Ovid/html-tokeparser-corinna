@@ -47,7 +47,7 @@ L<HTML::TokeParser::Corinna> for descriptions of these methods.
 
 =item * to_string
 
-=item * delete_attr
+=item * delete_attrs
 
 =item * attr
 
@@ -85,6 +85,6 @@ L<HTML::TokeParser::Corinna> for descriptions of these methods.
 
 =item * rewrite_tag
 
-=item * set_attr
+=item * set_attrs
 
 =back

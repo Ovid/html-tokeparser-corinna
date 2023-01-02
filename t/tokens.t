@@ -154,13 +154,13 @@ subtest 'start tag tokens' => sub {
     }
     TODO: {
         local $TODO = 'overload.pm does not yet support Corinna';
-        throws_ok { $token->set_attr( foo => 'bar' ) } 'HTML::TokeParser::Corinna::Exception::VoidContext', 'We cannot call setters in void context';
+        throws_ok { $token->set_attrs( foo => 'bar' ) } 'HTML::TokeParser::Corinna::Exception::VoidContext', 'We cannot call setters in void context';
         throws_ok { $token->normalize_tag } 'HTML::TokeParser::Corinna::Exception::VoidContext', 'We cannot call normalize_tag in void context';
     }
-    ok my $new_token = $token->set_attr( id => 'bicycles' ), 'We should be able to set attributes';
+    ok my $new_token = $token->set_attrs( id => 'bicycles' ), 'We should be able to set attributes';
     is $token->to_string,     '<article id="electric-cars" data-columns="3">', '... and the token is unchanged';
     is $new_token->to_string, '<article id="bicycles" data-columns="3">',      '... but we get a new token with the new data';
-    ok $new_token = $new_token->set_attr( foo => 'bar' ), 'We should be able to add attributes';
+    ok $new_token = $new_token->set_attrs( foo => 'bar' ), 'We should be able to add attributes';
     is $new_token->to_string, '<article id="bicycles" data-columns="3" foo="bar">', '... and again get a new token with the new attributes';
 };
 

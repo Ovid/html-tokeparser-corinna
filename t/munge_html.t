@@ -29,15 +29,15 @@ my $token;
 do { $token = $p->get_token } until $token->is_end_tag('head');
 
 do { $token = $p->get_token } until $token->is_start_tag('body');
-can_ok( $token, 'set_attr' );
-$token = $token->set_attr( foo => 'bar' );
+can_ok( $token, 'set_attrs' );
+$token = $token->set_attrs( foo => 'bar' );
 is(
     $token->to_string,
     '<body alink="#0000ff" bgcolor="#ffffff" foo="bar">',
     '... but a good token should set the new attribute'
 );
 
-$token = $token->set_attr( bgcolor => 'white' );
+$token = $token->set_attrs( bgcolor => 'white' );
 is(
     $token->to_string,
     '<body alink="#0000ff" bgcolor="white" foo="bar">',
@@ -53,31 +53,42 @@ my $attr = {
 };
 is_deeply( $token->attr, $attr, '... as should the attributes themselves' );
 
-can_ok( $token, 'delete_attr' );
-$token = $token->delete_attr('asdf');
+can_ok( $token, 'delete_attrs' );
+$token = $token->delete_attrs('asdf');
 is(
     $token->to_string,
     '<body alink="#0000ff" bgcolor="white" foo="bar">',
     '... and deleting a non-existent attribute should be a no-op'
 );
-$token = $token->delete_attr('foo');
+$token = $token->delete_attrs('foo');
 is(
     $token->to_string,
     '<body alink="#0000ff" bgcolor="white">',
     '... and deleting an existing one should succeed'
 );
-$token = $token->set_attr( 'foo', 'bar' );
-$token = $token->delete_attr('FOO');
+$token = $token->set_attrs( 'foo', 'bar' );
+$token = $token->delete_attrs('FOO');
 is(
     $token->to_string,
     '<body alink="#0000ff" bgcolor="white">',
     '... and deleting should be case-insensitive'
 );
-my $new_token = $token->delete_attr('alink', 'bgcolor');
+my $new_token = $token->delete_attrs('alink', 'bgcolor');
 is(
     $new_token->to_string,
     '<body>',
-    '... and we should be able to delete more than one attribute'
+    'We should be able to delete more than one attribute'
+);
+is(
+    $token->to_string,
+    '<body alink="#0000ff" bgcolor="white">',
+    '... and the orginal token should be unchanged'
+);
+$new_token = $token->delete_all_attrs;
+is(
+    $new_token->to_string,
+    '<body>',
+    '... and delete_all_attrs() should delete all of the attributes'
 );
 
 
@@ -87,23 +98,23 @@ ok( $token->is_start_tag,
     'Calling is_start_tag with a should succeed' );
 
 do { $token = $p->get_token } until $token->is_start_tag('hr');
-$token = $token->set_attr( 'class', 'fribble' );
+$token = $token->set_attrs( 'class', 'fribble' );
 is(
     $token->to_string,
     '<hr class="fribble" />',
     'Setting attributes on self-closing tags should succeed'
 );
-$token = $token->delete_attr('class');
+$token = $token->delete_attrs('class');
 is( $token->to_string, '<hr />', '... as should deleting them' );
 
 do { $token = $p->get_token } until $token->is_start_tag('hr');
-$token = $token->set_attr( 'class', 'fribble' );
+$token = $token->set_attrs( 'class', 'fribble' );
 is(
     $token->to_string,
     '<hr class="fribble"/>',
     'Setting attributes on self-closing tags should succeed'
 );
-$token = $token->delete_attr('class');
+$token = $token->delete_attrs('class');
 is( $token->to_string, '<hr/>', '... as should deleting them' );
 
 can_ok( $token, 'normalize_tag' );

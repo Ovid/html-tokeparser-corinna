@@ -191,7 +191,7 @@ These accessors return true or false.
 
 # MUTATORS
 
-The `delete_attr()` and `set_attr()` methods allow the programmer to rewrite
+The `delete_attrs()` and `set_attrs()` methods allow the programmer to rewrite
 start tag attributes on the fly.  It should be noted that bad HTML will be
 "corrected" by this.  Specifically, the new tag will have all attributes
 lower-cased with the values properly quoted.
@@ -204,10 +204,10 @@ Calling a mutator on an token type that does not support that property is a
 no-op.  For example:
 
     if ($token->is_comment) {
-       $token->set_attr(foo => 'bar'); # does nothing
+       $token->set_attrs(foo => 'bar'); # does nothing
     }
 
-- `delete_attr($name)`
+- `delete_attrs($name)`
 
     This method attempts to delete the attribute specified.  It will silently fail
     if called on anything other than a start tag.  The argument is
@@ -216,7 +216,7 @@ no-op.  For example:
     without changing the tag.
 
            # <body bgcolor="#FFFFFF">
-           $token->delete_attr('bgcolor');
+           $token->delete_attrs('bgcolor');
            print $token->to_string;
            # <body>
         
@@ -224,30 +224,30 @@ no-op.  For example:
     After this method is called, if successful, the `to_string()`, `attr()`
     and `attrseq()` methods will all return updated results.
 
-- `set_attr($name,$value)`
+- `set_attrs($name,$value)`
 
     This method will set the value of an attribute.  If the attribute is not found,
     then `attrseq()` will have the new attribute listed at the end.
 
         # <p>
-        $token->set_attr(class => 'some_class');
+        $token->set_attrs(class => 'some_class');
         print $token->to_string;
         # <p class="some_class">
 
         # <body bgcolor="#FFFFFF">
-        $token->set_attr('bgcolor','red');
+        $token->set_attrs('bgcolor','red');
         print $token->to_string;
         # <body bgcolor="red">
 
     After this method is called, if successful, the `to_string()`, `attr()`
     and `attrseq()` methods will all return updated results.
 
-- `set_attr($hashref)`
+- `set_attrs($hashref)`
 
     Under the premise that `set_` methods should accept what their corresponding
     accessor methods emit, the following works:
 
-        $tag->set_attr($tag->attr);
+        $tag->set_attrs($tag->attr);
 
     Theoretically that's a no-op and for purposes of rendering HTML, it should be.
     However, internally this calls `$tag->rewrite_tag`, so see that method to
@@ -260,15 +260,15 @@ no-op.  For example:
           class  => 'headline',
           valign => 'top'
         };
-        $token->set_attr($attrs) 
+        $token->set_attrs($attrs) 
           if $token->is_start_tag('td') &&  $token->attr('class') eq 'stories';
 
 - `rewrite_tag()`
 
     This method rewrites the tag.  The tag name and the name of all attributes will
     be lower-cased.  Values that are not quoted with double quotes will be.  This
-    may be called on both start or end tags.  Note that both `set_attr()` and
-    `delete_attr()` call this method prior to returning.
+    may be called on both start or end tags.  Note that both `set_attrs()` and
+    `delete_attrs()` call this method prior to returning.
 
     If called on a token that is not a tag, it simply returns.  Regardless of how
     it is called, it returns the token.
@@ -364,7 +364,7 @@ the form tags.  You need to change it to "http://www.bar.com/".
              if ( $token->is_start_tag('form') ) {
                  my $action = $token->attr(action);
                  $action =~ s/www\.foo\.com/www.bar.com/;
-                 $token->set_attr('action', $action);
+                 $token->set_attrs('action', $action);
              }
              print {$fh} $token->to_string;
          }

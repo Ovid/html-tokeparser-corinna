@@ -288,7 +288,7 @@ Returns false if the token is not a process instruction.
 
 =head1 MUTATORS
 
-The C<delete_attr()> and C<set_attr()> methods allow the programmer to rewrite
+The C<delete_attrs()> and C<set_attrs()> methods allow the programmer to rewrite
 start tag attributes on the fly.  It should be noted that bad HTML will be
 "corrected" by this.  Specifically, the new tag will have all attributes
 lower-cased with the values properly quoted.
@@ -301,12 +301,12 @@ Calling a mutator on an token type that does not support that property is a
 no-op.  For example:
 
     if ($token->is_comment) {
-       $token->set_attr(foo => 'bar'); # does nothing
+       $token->set_attrs(foo => 'bar'); # does nothing
     }
 
 =over 4
 
-=item * C<delete_attr($name)>
+=item * C<delete_attrs($name)>
 
 This method attempts to delete the attribute specified.  It will silently fail
 if called on anything other than a start tag.  The argument is
@@ -315,37 +315,37 @@ attempting to delete.  If the attribute is not found, the method will return
 without changing the tag.
 
     # <body bgcolor="#FFFFFF">
-    $token->delete_attr('bgcolor');
+    $token->delete_attrs('bgcolor');
     print $token->to_string;
     # <body>
  
 After this method is called, if successful, the C<to_string()>, C<attr()>
 and C<attrseq()> methods will all return updated results.
 
-=item * C<set_attr($name,$value)>
+=item * C<set_attrs($name,$value)>
 
 This method will set the value of an attribute.  If the attribute is not found,
 then C<attrseq()> will have the new attribute listed at the end.
 
     # <p>
-    $token->set_attr(class => 'some_class');
+    $token->set_attrs(class => 'some_class');
     print $token->to_string;
     # <p class="some_class">
 
     # <body bgcolor="#FFFFFF">
-    $token->set_attr('bgcolor','red');
+    $token->set_attrs('bgcolor','red');
     print $token->to_string;
     # <body bgcolor="red">
 
 After this method is called, if successful, the C<to_string()>, C<attr()>
 and C<attrseq()> methods will all return updated results.
 
-=item * C<set_attr($hashref)>
+=item * C<set_attrs($hashref)>
 
 Under the premise that C<set_> methods should accept what their corresponding
 accessor methods emit, the following works:
 
-    $tag->set_attr($tag->attr);
+    $tag->set_attrs($tag->attr);
 
 Theoretically that's a no-op and for purposes of rendering HTML, it should be.
 However, internally this calls C<$tag-E<gt>rewrite_tag>, so see that method to
@@ -358,15 +358,15 @@ can do this:
       class  => 'headline',
       valign => 'top'
     };
-    $token->set_attr($attrs) 
+    $token->set_attrs($attrs) 
       if $token->is_start_tag('td') &&  $token->attr('class') eq 'stories';
 
 =item * C<rewrite_tag()>
 
 This method rewrites the tag.  The tag name and the name of all attributes will
 be lower-cased.  Values that are not quoted with double quotes will be.  This
-may be called on both start or end tags.  Note that both C<set_attr()> and
-C<delete_attr()> call this method prior to returning.
+may be called on both start or end tags.  Note that both C<set_attrs()> and
+C<delete_attrs()> call this method prior to returning.
 
 If called on a token that is not a tag, it simply returns.  Regardless of how
 it is called, it returns the token.
@@ -463,7 +463,7 @@ the form tags.  You need to change it to "http://www.bar.com/".
             if ( $token->is_start_tag('form') ) {
                 my $action = $token->attr(action);
                 $action =~ s/www\.foo\.com/www.bar.com/;
-                $token->set_attr('action', $action);
+                $token->set_attrs('action', $action);
             }
             print {$fh} $token->to_string;
         }

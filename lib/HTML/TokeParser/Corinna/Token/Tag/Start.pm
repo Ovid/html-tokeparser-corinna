@@ -19,24 +19,26 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
     method attrseq   {$attrseq}
     method to_string {$to_string}
 
-    # XXX must have a list of k/v pairs
-    method set_attr ( $name, $value ) {
+    method set_attrs (%pairs) {
         if ( !defined wantarray ) {
-            throw( VoidContext => method => 'set_attr' );
+            throw( VoidContext => method => 'set_attrs' );
         }
-        $name = lc $name;
         my $sequence   = [ $attrseq->@* ];
         my $attributes = { $attr->%* };
-        unless ( exists $attributes->{$name} ) {
-            push @$sequence => $name;
+        foreach my $attribute (keys %pairs) {
+            my $value = $pairs{$attribute};
+            $attribute = lc $attribute;
+            unless ( exists $attributes->{$attribute} ) {
+                push @$sequence => $attribute;
+            }
+            $attributes->{$attribute} = $value;
         }
-        $attributes->{$name} = $value;
         return $self->_rewrite_tag( $sequence, $attributes );
     }
 
-    method delete_attr (@attributes) {
+    method delete_attrs (@attributes) {
         if ( !defined wantarray ) {
-            throw( VoidContext => method => 'delete_attr' );
+            throw( VoidContext => method => 'delete_attrs' );
         }
         my $sequence   = [ $attrseq->@* ];
         my $attributes = { $attr->%* };
@@ -48,6 +50,10 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
             }
         }
         return $self->_rewrite_tag( $sequence, $attributes );
+    }
+
+    method delete_all_attrs () {
+        return $self->delete_attrs($attrseq->@*);
     }
 
     method is_start_tag ( $tag = undef ) {
@@ -108,7 +114,7 @@ the C<HTML::TokeParser::Corinna> docs for details.
 
 =item * to_string
 
-=item * delete_attr
+=item * delete_attrs
 
 =item * tag
 
@@ -126,7 +132,7 @@ the C<HTML::TokeParser::Corinna> docs for details.
 
 =item * text
 
-=item * set_attr
+=item * set_attrs
 
 =back
 
