@@ -19,6 +19,7 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
     method attrseq   {$attrseq}
     method to_string {$to_string}
 
+    # XXX must have a list of k/v pairs
     method set_attr ( $name, $value ) {
         if ( !defined wantarray ) {
             throw( VoidContext => method => 'set_attr' );
@@ -33,16 +34,18 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
         return $self->_rewrite_tag( $sequence, $attributes );
     }
 
-    method delete_attr ($name) {
+    method delete_attr (@attributes) {
         if ( !defined wantarray ) {
             throw( VoidContext => method => 'delete_attr' );
         }
-        $name = lc $name;
         my $sequence   = [ $attrseq->@* ];
         my $attributes = { $attr->%* };
-        if ( exists $attributes->{$name} ) {
-            delete $attributes->{$name};
-            $sequence->@* = grep { $_ ne $name } $sequence->@*;
+        foreach my $attribute (@attributes) {
+            $attribute = lc $attribute;
+            if ( exists $attributes->{$attribute} ) {
+                delete $attributes->{$attribute};
+                $sequence->@* = grep { $_ ne $attribute } $sequence->@*;
+            }
         }
         return $self->_rewrite_tag( $sequence, $attributes );
     }

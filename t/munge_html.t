@@ -73,6 +73,13 @@ is(
     '<body alink="#0000ff" bgcolor="white">',
     '... and deleting should be case-insensitive'
 );
+my $new_token = $token->delete_attr('alink', 'bgcolor');
+is(
+    $new_token->to_string,
+    '<body>',
+    '... and we should be able to delete more than one attribute'
+);
+
 
 do { $token = $p->get_token } until $token->is_start_tag('h1');
 is( $token->tag,, 'h1', 'Calling tag() should return the tag' );
