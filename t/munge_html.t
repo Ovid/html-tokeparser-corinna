@@ -91,6 +91,12 @@ is(
     '... and delete_all_attrs() should delete all of the attributes'
 );
 
+$new_token = $new_token->set_attrs( key => 'value', key2 => 'value2' );
+is(
+    $new_token->to_string,
+    '<body key="value" key2="value2">',
+    'set_attrs should allow us to set several attributes at once'
+);
 
 do { $token = $p->get_token } until $token->is_start_tag('h1');
 is( $token->tag,, 'h1', 'Calling tag() should return the tag' );
