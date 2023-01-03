@@ -32,11 +32,9 @@ explain scalar @$tokens;
 explain $tokens->[0]->to_string;
 explain $tokens->[1]->to_string;
 
-TOOD: {
-    local $TODO = 'overload does not yet work with Corinna';
-    throws_ok { $parser->no_such_method }
-    'HTML::TokeParser::Corinna::Exception::MethodNotFound',
-      'The parser can throw MethodNotFound exceptions';
-}
+throws_ok { $parser->no_such_method }
+'HTML::TokeParser::Corinna::Exception::MethodNotFound',
+  'The parser can throw MethodNotFound exceptions';
+explain $@->to_string;
 
 done_testing;

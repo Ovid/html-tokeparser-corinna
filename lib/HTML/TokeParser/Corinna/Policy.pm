@@ -3,7 +3,6 @@ package HTML::TokeParser::Corinna::Policy {
     use strict;
     use warnings;
     use feature ();
-    use Carp;
     use namespace::autoclean;
     use HTML::TokeParser::Corinna::Utils;
 
@@ -19,7 +18,6 @@ package HTML::TokeParser::Corinna::Policy {
         builtin->import::into( $caller, 'true', 'false' );
         strict->import;
         feature->import(qw/:5.37.8 try class/);
-        Carp->import::into( $caller, qw(carp croak) );
         namespace::autoclean->import::into($caller);
         HTML::TokeParser::Corinna::Utils->import::into( $caller, 'throw' );
     }
@@ -44,7 +42,6 @@ This module is a replacement for the following:
     use v5.37.8;
     use warnings;
     no warnings 'experimental';
-    use Carp qw(carp croak);
     use namespace::autoclean;
     use feature qw(try class);
     use builtin qw(true false);
