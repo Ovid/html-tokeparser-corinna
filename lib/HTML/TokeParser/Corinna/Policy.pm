@@ -21,15 +21,7 @@ package HTML::TokeParser::Corinna::Policy {
         feature->import(qw/:5.37.8 try class/);
         Carp->import::into( $caller, qw(carp croak) );
         namespace::autoclean->import::into($caller);
-        HTML::TokeParser::Corinna::Utils->import::into($caller, 'throw');
-    }
-
-    sub unimport {
-        warnings->unimport;
-        strict->unimport;
-        feature->unimport;
-        Carp->unimport;
-        namespace::autoclean->unimport;
+        HTML::TokeParser::Corinna::Utils->import::into( $caller, 'throw' );
     }
 }
 
