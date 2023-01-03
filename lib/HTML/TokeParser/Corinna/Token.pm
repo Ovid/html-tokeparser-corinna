@@ -11,6 +11,10 @@ class HTML::TokeParser::Corinna::Token :isa(HTML::TokeParser::Corinna::Base) {
     method is_declaration         {false}
     method is_pi                  {false}
     method is_process_instruction {false}
+
+    # currently, forward declaration of methods cause a segfault
+    # https://github.com/Perl/perl5/pull/20647#issuecomment-1369487296
+    # method to_string; # forward declaration. Must be supplied by subclasses.
 }
 
 1;
