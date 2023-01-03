@@ -44,22 +44,11 @@ This is the abstract base class for all returned tokens.
 =head1 METHODS
 
 The following list of methods are provided by this class.  Most of these are
-stub methods which must be overridden in a subclass.  See 
-L<HTML::TokeParser::Corinna> for descriptions of these methods.
+stub methods which must be overridden in a subclass.  See
+L<HTML::TokeParser::Corinna> for descriptions of these methods. These all
+return false unless overridden by the appropriate subclass.
 
 =over 4
-
-=item * to_string
-
-=item * delete_attrs
-
-=item * attr
-
-=item * attrseq
-
-=item * tag
-
-=item * token0
 
 =item * is_comment
 
@@ -76,19 +65,5 @@ L<HTML::TokeParser::Corinna> for descriptions of these methods.
 =item * is_tag
 
 =item * is_text
-
-=item * return_attr
-
-=item * return_attrseq
-
-=item * return_tag
-
-=item * return_text
-
-=item * return_token0
-
-=item * rewrite_tag
-
-=item * set_attrs
 
 =back
