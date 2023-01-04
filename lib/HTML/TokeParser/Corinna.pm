@@ -112,9 +112,8 @@ blessing array references).
 To simplify this, C<HTML::TokeParser::Corinna> allows the user ask more
 intuitive (read: more self-documenting) questions about the tokens returned.
 
-You can also rebuild some tags on the fly.  Frequently, the attributes
-associated with start tags need to be altered, added to, or deleted.  This
-functionality is built in.
+Note that all objects in this module are immutable. You can rebuild some tags
+on the fly, but any code that changes a token returns a new instance.
 
 =head1 CONTRUCTORS
 
@@ -297,73 +296,55 @@ Self-closing tags (e.g. E<lt>hr /E<gt>) are also handled correctly.  Some older
 browsers require a space prior to the final slash in a self-closed tag.  If
 such a space is detected in the original HTML, it will be preserved.
 
-Calling a mutator on an token type that does not support that property is a
-no-op.  For example:
+Because C<HTML::TokeParser::Corinna> objects are immutable, mutators actually
+return new instances of these objects. This prevents strange "action at a distance"
+when you pass a token to a subroutine and it alters the token in unsuspecting ways. Thus, you'll want
+to do this:
 
-    if ($token->is_comment) {
-       $token->set_attrs(foo => 'bar'); # does nothing
-    }
+    my $new_token = $token->delete_attrs(@attribute_names);
+    # or
+    $token = $token->delete_attrs(@attribute_names);
+
+Calling a mutator in void context will throw an
+C<HTML::TokeParser::Corinna::Exception::VoidContext> exception.
 
 =over 4
 
-=item * C<delete_attrs($name)>
+=item * C<delete_attrs(@attribute_names)>
 
-This method attempts to delete the attribute specified.  It will silently fail
-if called on anything other than a start tag.  The argument is
-case-insensitive, but must otherwise be an exact match of the attribute you are
-attempting to delete.  If the attribute is not found, the method will return
-without changing the tag.
+This method attempts to delete the attribute specified. This is only available
+for start tags.  The argument is case-insensitive, but must otherwise be an
+exact match of the attribute you are attempting to delete.  If the attribute
+is not found, the method will return without changing the tag.
 
-    # <body bgcolor="#FFFFFF">
-    $token->delete_attrs('bgcolor');
-    print $token->to_string;
-    # <body>
+    if ( $token->is_start_tag('body') ) {
+        # <body bgcolor="#FFFFFF">
+        my $new_token = $token->delete_attrs('bgcolor');
+        print $new_token->to_string;
+        # <body>
+    }
  
-After this method is called, if successful, the C<to_string()>, C<attr()>
-and C<attrseq()> methods will all return updated results.
+=item * C<set_attrs(%kv_pairs)>
 
-=item * C<set_attrs($name,$value)>
-
-This method will set the value of an attribute.  If the attribute is not found,
-then C<attrseq()> will have the new attribute listed at the end.
+This method will set the value of attributes for start tags. If the attribute
+is not found, then C<attrseq()> will have the new attribute listed at the end.
 
     # <p>
-    $token->set_attrs(class => 'some_class');
+    $token = $token->set_attrs(class => 'some_class');
     print $token->to_string;
     # <p class="some_class">
 
     # <body bgcolor="#FFFFFF">
-    $token->set_attrs('bgcolor','red');
+    $token = $token->set_attrs('bgcolor','red');
     print $token->to_string;
     # <body bgcolor="red">
 
 After this method is called, if successful, the C<to_string()>, C<attr()>
 and C<attrseq()> methods will all return updated results.
 
-=item * C<set_attrs($hashref)>
+=item * C<normalize_tag()>
 
-Under the premise that C<set_> methods should accept what their corresponding
-accessor methods emit, the following works:
-
-    $tag->set_attrs($tag->attr);
-
-Theoretically that's a no-op and for purposes of rendering HTML, it should be.
-However, internally this calls C<$tag-E<gt>rewrite_tag>, so see that method to
-understand how this may affect you.
-
-Of course, this is useless if you want to actually change the attributes, so you
-can do this:
-
-    my $attrs = {
-      class  => 'headline',
-      valign => 'top'
-    };
-    $token->set_attrs($attrs) 
-      if $token->is_start_tag('td') &&  $token->attr('class') eq 'stories';
-
-=item * C<rewrite_tag()>
-
-This method rewrites the tag.  The tag name and the name of all attributes will
+This method rewrites start and end tags. The tag name and the name of all attributes will
 be lower-cased.  Values that are not quoted with double quotes will be.  This
 may be called on both start or end tags.  Note that both C<set_attrs()> and
 C<delete_attrs()> call this method prior to returning.
@@ -372,7 +353,7 @@ If called on a token that is not a tag, it simply returns.  Regardless of how
 it is called, it returns the token.
 
     # <body alink=#0000ff BGCOLOR=#ffffff class='none'>
-    $token->rewrite_tag;
+    $token = $token->rewrite_tag;
     print $token->to_string;
     # <body alink="#0000ff" bgcolor="#ffffff" class="none">
 
@@ -380,7 +361,7 @@ A quick cleanup of sloppy HTML is now the following:
 
     my $parser = HTML::TokeParser::Corinna->new( string => $ugly_html );
     while (my $token = $parser->get_token) {
-        $token->rewrite_tag;
+        $token = $token->rewrite_tag;
         print $token->to_string;
     }
    
@@ -463,7 +444,7 @@ the form tags.  You need to change it to "http://www.bar.com/".
             if ( $token->is_start_tag('form') ) {
                 my $action = $token->attr(action);
                 $action =~ s/www\.foo\.com/www.bar.com/;
-                $token->set_attrs('action', $action);
+                $token = $token->set_attrs('action', $action);
             }
             print {$fh} $token->to_string;
         }
@@ -501,7 +482,7 @@ L<HTML::TokeParser::Corinna::Token::ProcessInstruction>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2022 by Curtis "Ovid" Poe.  All rights reserved.  This program is
+Copyright (c) 2023 by Curtis "Ovid" Poe.  All rights reserved.  This program is
 free software; you may redistribute it and/or modify it under the same terms as
 Perl itself
 
