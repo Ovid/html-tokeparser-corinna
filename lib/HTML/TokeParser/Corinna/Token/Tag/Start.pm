@@ -1,4 +1,5 @@
 use experimental 'class';
+use HTML::TokeParser::Corinna::Token::Tag;
 class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corinna::Token::Tag) {
     use HTML::TokeParser::Corinna::Policy;
     use HTML::Entities qw/encode_entities/;

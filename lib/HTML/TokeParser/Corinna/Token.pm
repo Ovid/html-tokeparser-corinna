@@ -1,5 +1,6 @@
 use experimental 'class';
 
+use HTML::TokeParser::Corinna::Base;
 class HTML::TokeParser::Corinna::Token :isa(HTML::TokeParser::Corinna::Base) {
     use HTML::TokeParser::Corinna::Policy;
 

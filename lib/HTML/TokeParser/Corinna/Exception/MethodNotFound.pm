@@ -1,4 +1,5 @@
 use experimental 'class';
+use HTML::TokeParser::Corinna::Exception;
 class HTML::TokeParser::Corinna::Exception::MethodNotFound : isa(HTML::TokeParser::Corinna::Exception) {
     field $method : param;
     field $class : param;
