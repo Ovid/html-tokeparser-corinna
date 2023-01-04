@@ -19,14 +19,20 @@ class HTML::TokeParser::Corinna::Token::Tag::Start : isa(HTML::TokeParser::Corin
     method attrseq   {$attrseq}
     method to_string {$to_string}
 
-    method set_attrs (%pairs) {
+    method set_attrs (@pairs) {
         if ( !defined wantarray ) {
             throw( VoidContext => method => 'set_attrs' );
         }
+        unless ( !( @pairs % 2 ) ) {
+            throw(
+                'InvalidArgument',
+                method  => 'set_attrs',
+                message => 'Arguments must be an even-sized list of key/value pairs',
+            );
+        }
         my $sequence   = [ $attrseq->@* ];
         my $attributes = { $attr->%* };
-        foreach my $attribute (keys %pairs) {
-            my $value = $pairs{$attribute};
+        while ( my ( $attribute, $value ) = splice @pairs, 0, 2 ) {
             $attribute = lc $attribute;
             unless ( exists $attributes->{$attribute} ) {
                 push @$sequence => $attribute;

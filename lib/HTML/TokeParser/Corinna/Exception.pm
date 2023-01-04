@@ -10,7 +10,10 @@ class HTML::TokeParser::Corinna::Exception {
     method message ()     {$message}
     method stack_trace () {$stack_trace}
 
-    method to_string () {
+    # XXX the `@` is needed in the signature because overload
+    # passes additional arguments to the method, but we don't care
+    # about those.
+    method to_string (@) {
         my $error = $self->error;
         if ( my $message = $self->message ) {
             $error .= "\n$message";

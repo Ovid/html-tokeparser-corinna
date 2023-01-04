@@ -37,6 +37,13 @@ is(
     '... but a good token should set the new attribute'
 );
 
+throws_ok {
+    # my ($undef) because calling set_attrs in void context is fatal
+    my (undef) = $token->set_attrs( foo => 'bar', 2 );
+}
+'HTML::TokeParser::Corinna::Exception::InvalidArgument',
+  'Passing an odd-sized list to set_attrs should throw an InvalidArgument exception';
+
 $token = $token->set_attrs( bgcolor => 'white' );
 is(
     $token->to_string,
