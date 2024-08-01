@@ -32,7 +32,7 @@ class HTML::TokeParser::Corinna :isa(HTML::TokeParser::Corinna::Base) {
     ADJUST {
         unless ( $html xor $file ) {
             throw(
-                'InvalidArguemnt',
+                'InvalidArgument',
                 message => "You must supply 'html' for 'file; to the constructor",
                 method  => 'new',
             );
